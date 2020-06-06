@@ -41,11 +41,10 @@ public class ScanQRCode  extends AppCompatActivity {
         btnAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // mScannerView = new IntentIntegrator(ScanQRCode.this);
-               // mScannerView.setOrientationLocked(false);
-               // mScannerView.setBeepEnabled(false);
-               // mScannerView.initiateScan();
-                connectToWIFI();
+               mScannerView = new IntentIntegrator(ScanQRCode.this);
+               mScannerView.setOrientationLocked(false);
+               mScannerView.setBeepEnabled(false);
+               mScannerView.initiateScan();
             }
         });
 
@@ -59,11 +58,11 @@ public class ScanQRCode  extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 Toast.makeText(this, contents, Toast.LENGTH_SHORT).show();
+                connectToWIFI();
                 startActivity(new Intent(ScanQRCode.this, MainActivity.class));
             }
             if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Scanned failed !!!", Toast.LENGTH_SHORT).show();
-               // connectToWIFI();
                 startActivity(new Intent(ScanQRCode.this, MainActivity.class));
             }
         } else {
