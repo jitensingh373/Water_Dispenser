@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void intializeView(){
         textView = findViewById(R.id.inst_multi);
-        textView.setText("1. Select the type [hot,normal,cold].\n\n2. Select the quantity of water.\n\n3. Click on dispense button.");
+        textView.setText("1. Select the type [hot,normal,cold].\n2. Select the quantity of water.\n3. Click on dispense button.");
         buttonHot = findViewById(R.id.button_hot);
         buttonNormal = findViewById(R.id.button_normal);
         buttonCold = findViewById(R.id.button_cold);
