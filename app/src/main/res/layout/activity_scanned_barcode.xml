@@ -5,12 +5,15 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:layout_weight="1"
-    android:padding="10dp">
-
+    >
+    <include
+        layout="@layout/toolbarlayout"
+        android:layout_width="match_parent"
+        android:layout_height="46dp" />
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="0.2"
+        android:layout_weight="0.05"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="20dp"
@@ -25,14 +28,14 @@
         android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:textStyle="bold"
-        android:text="SCAN QR CODE TO CONNECT TO DISPENSER"
+        android:text=""
         android:textColor="@android:color/black"
         android:textSize="12sp"/>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.4"
+        android:layout_weight="0.2"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_margin="20dp"
@@ -47,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_alignParentBottom="true"
-        android:text="SCAN"
+        android:text="SCAN QR CODE TO CONNECT"
         android:textStyle="bold"
         android:textColor="@android:color/white"
         android:background="@drawable/gradient_normal_orange"/>

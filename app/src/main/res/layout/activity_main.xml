@@ -1,174 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     android:orientation="vertical">
+    <include
+        layout="@layout/toolbarlayout"
+        android:layout_width="match_parent"
+        android:layout_height="46dp" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:layout_weight="0.2"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="4dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="0.1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:weightSum="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/instruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="INSTRUCTIONS: "
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/inst_multi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:lines="4"
+                    android:textStyle="bold|italic">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:src="@drawable/water_glass"></ImageView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:layout_weight="0.1"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/instruction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="Instruction: "
-                android:textSize="15sp"
+                android:text="SELECT WATER TYPE: "
                 android:textColor="@android:color/black"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <Button
+                    android:id="@+id/button_hot"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_normal_hot"
+                    android:text="HOT"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/button_normal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_normal_normal"
+                    android:text="NORMAL"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/button_cold"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_normal_cold"
+                    android:text="COLD"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:layout_weight="0.1"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
+
             <TextView
-                android:id="@+id/inst_multi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="4"
-                android:textStyle="italic"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:text="SELECT WATER QTY: "
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            </TextView>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <Button
+                    android:id="@+id/button_250"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_normal_button"
+                    android:padding="8dp"
+                    android:text="250ML"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/button_500"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_normal_button"
+                    android:padding="8dp"
+                    android:text="500ML"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/button_750"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_normal_button"
+                    android:padding="8dp"
+                    android:text="750ML"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
         </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="0.12"
-            android:layout_height="0dp"
-            android:src="@drawable/water_glass"></ImageView>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select water type: "
-        android:textSize="15sp"
-        android:textColor="@android:color/black"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.035"
-        android:layout_margin="15dp"
-        android:weightSum="3"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_hot"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/gradient_normal_hot"
-            android:text="HOT"
-            android:layout_margin="2dp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"/>
-
-        <Button
-            android:id="@+id/button_normal"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/gradient_normal_normal"
-            android:text="NORMAL"
-            android:textStyle="bold"
-            android:textColor="@android:color/white" />
-
-        <Button
-            android:id="@+id/button_cold"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/gradient_normal_cold"
-            android:text="COLD"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Select water Qty: "
-        android:textSize="15sp"
-        android:textColor="@android:color/black"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.030"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_250"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/gradient_normal_button"
-            android:text="250ML"
-            android:padding="8dp"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/button_500"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:background="@drawable/gradient_normal_button"
-            android:text="500ML"
-            android:padding="8dp"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/button_750"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:background="@drawable/gradient_normal_button"
-            android:text="750ML"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/button_on"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.035"
+        android:layout_margin="10dp"
         android:layout_marginTop="25dp"
+        android:layout_weight="0.030"
         android:background="@drawable/gradient_normal_orange"
         android:text="DISPENSE"
-        android:layout_margin="10dp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white" />/>
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:layout_gravity="right"
-        android:textColor="@android:color/black"
         android:text="Developed by Whirlpool GTEC"
+        android:textColor="@android:color/black"
         android:textSize="10sp"
         android:textStyle="bold" />
 
