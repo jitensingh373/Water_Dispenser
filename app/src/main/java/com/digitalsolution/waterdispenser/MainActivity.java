@@ -80,9 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
         }
-        //conf.SSID = String.format("\"%s\"", "Jitu");
-        // conf.preSharedKey = String.format("\"%s\"", "Jiten374");
-
         conf.SSID =  "\""+"Chetan"+"\"";
         conf.preSharedKey = "\""+"qwerty123"+"\"";
         Toast.makeText(this,conf.SSID,Toast.LENGTH_SHORT).show();
@@ -101,12 +98,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //updateNetwork(wifiManager, config);
 
         int networkId = wifiManager.addNetwork(conf);
-        Toast.makeText(this,conf.status,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this,conf.status,Toast.LENGTH_SHORT).show();
         wifiManager.disconnect();
-        Toast.makeText(this,networkId,Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(this,networkId,Toast.LENGTH_SHORT).show();
         wifiManager.enableNetwork(networkId, true);
         wifiManager.reconnect();
-        Toast.makeText(this,conf.status,Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(this,conf.status,Toast.LENGTH_SHORT).show();
     }
     public void onClick( View v ){
         if ( v.getId()== R.id.button_hot ) {
@@ -144,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             button750.setEnabled(true);
             mQTYWater = button750.getText().toString();
          //   button750.setBackgroundColor(getResources().getColor(R.color.green));
-            // do stuff
         }
         else if(v.getId() == R.id.button_on){
             dispense.setBackgroundColor(getResources().getColor(R.color.green));
@@ -155,6 +151,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
             }
+            else {
+                Toast.makeText(this, "Please select water type and quantity to proceed...", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
@@ -162,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void SendCommandTOAppliance(String type, String qty) throws UnsupportedEncodingException {
 
         //http://192.168.168.110:8080/dispense?type=hot&qty=250
+       // http://192.168.168.110:80/dispense?type=HOT&qty=250ML
 
         String data = URLEncoder.encode("cycle", "UTF-8")
                 + "=" + URLEncoder.encode("CycleID", "UTF-8");
@@ -181,27 +181,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             conn.setRequestProperty("Accept", "text/plain");
             conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
             conn.setConnectTimeout(5000);
-
             OutputStream os = conn.getOutputStream();
             os.write(data.getBytes());
             os.flush();
             os.close();
-
-            int responseCode = conn.getResponseCode();
-
-            // Get the server response
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                int n;
-                byte[] byteChunk = new byte[4096];
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                InputStream is = conn.getInputStream();
-                while ( (n = is.read(byteChunk)) > 0 ) {
-                    outputStream.write(byteChunk, 0, n);
-                }
-                responseBytes = outputStream.toByteArray();
-                text = outputStream.toString();
-            }
-
             // Get the server response
         } catch (MalformedURLException e) {
             text = e.toString();

@@ -36,7 +36,6 @@ public class ScanQRCode  extends AppCompatActivity {
     }
 
     private void initViews() {
-        //   surfaceView = findViewById(R.id.surfaceView);
         btnAction = findViewById(R.id.btnAction);
         btnAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,12 +57,10 @@ public class ScanQRCode  extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 Toast.makeText(this, contents, Toast.LENGTH_SHORT).show();
-                connectToWIFI();
                 startActivity(new Intent(ScanQRCode.this, MainActivity.class));
             }
             if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Scanned failed !!!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(ScanQRCode.this, MainActivity.class));
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -79,11 +76,9 @@ public class ScanQRCode  extends AppCompatActivity {
         }else{
             wifiManager.setWifiEnabled(true);
         }
-        conf.SSID = String.format("\"%s\"", "Chetan");
-        conf.preSharedKey = String.format("\"%s\"", "qwerty1234");
+        conf.SSID = String.format("\"%s\"", "Chetan11");
+        conf.preSharedKey = String.format("\"%s\"", "qwerty12345");
 
-       // conf.SSID =  "\""+"Chetan"+"\"";
-        //conf.preSharedKey = "\""+"qwerty123"+"\"";
         Toast.makeText(this,conf.SSID,Toast.LENGTH_SHORT).show();
         Toast.makeText(this,conf.preSharedKey,Toast.LENGTH_SHORT).show();
 
@@ -97,16 +92,12 @@ public class ScanQRCode  extends AppCompatActivity {
         conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
         conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
         conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_EAP);
-        //updateNetwork(wifiManager, config);
 
         int networkId = wifiManager.addNetwork(conf);
-       // Toast.makeText(this,conf.status,Toast.LENGTH_SHORT).show();
         wifiManager.disconnect();
-       // Toast.makeText(this,networkId,Toast.LENGTH_SHORT).show();
         wifiManager.enableNetwork(networkId, true);
         wifiManager.reconnect();
         wifiManager.saveConfiguration();
-       // Toast.makeText(this,conf.status,Toast.LENGTH_SHORT).show();
     }
 
 }
