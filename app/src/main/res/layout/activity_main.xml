@@ -30,10 +30,8 @@
                 android:layout_height="wrap_content"
                 android:lines="4"
                 android:textStyle="italic"
-                android:layout_below="@+id/instruction"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:maxLines="8">
+                android:layout_marginTop="5dp">
 
             </TextView>
 
