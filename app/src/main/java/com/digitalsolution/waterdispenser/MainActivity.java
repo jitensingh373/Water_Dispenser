@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button750.setOnClickListener((View.OnClickListener) this);
         dispense.setOnClickListener((View.OnClickListener) this);
         connectToWIFI();
+       // AlertDialog();
     }
 
     private void AlertDialog() {
@@ -123,7 +124,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinish() {
                 try {
-                    // SendCommandTOAppliance(mTypeWater, mQTYWater);
+                    if (mTypeWater != null && mQTYWater != null) {
+                        SendCommandTOAppliance(mTypeWater, mQTYWater);
+                    }
                     final Handler handler = new Handler();
                     final Runnable runnable = new Runnable() {
                         @Override
