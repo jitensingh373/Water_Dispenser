@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button750.setOnClickListener((View.OnClickListener) this);
         dispense.setOnClickListener((View.OnClickListener) this);
         connectToWIFI();
-        alertDialog();
+        //alertDialog();
     }
 
     private void alertDialog() {
@@ -153,18 +153,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }.start();
-
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (alertDialog.isShowing()) {
-                    alertDialog.dismiss();
-                }
-                displayExitCommand();
-            }
-        };
-        handler.postDelayed(runnable, 10000);
     }
 
     @Override
@@ -387,7 +375,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if (wifiManager.isWifiEnabled()) {
                     dispense.setBackgroundColor(getResources().getColor(R.color.green));
-                    loadPopUpGIF(); //  AlertDialog();
+                    //loadPopUpGIF();
+                   // AlertDialog();
+                    alertDialog();
                 } else {
                    // Toast.makeText(this, "Your WIFI connection lost.Let me try to connect again!!!", Toast.LENGTH_SHORT).show();
                     if (ssId != null && mPassword != null && wifiManager != null) {
