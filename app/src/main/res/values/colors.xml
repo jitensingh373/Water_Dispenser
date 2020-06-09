@@ -9,4 +9,6 @@
     <color name="blue_light">#6200EE</color>
     <color name="red_light">#B00020</color>
     <color name="yellow_light">#714cfe</color>
+    <color name="grey">#555555</color>
+    <color name="pink">#FF1493</color>
 </resources>
