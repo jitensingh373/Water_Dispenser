@@ -389,9 +389,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     dispense.setBackgroundColor(getResources().getColor(R.color.green));
                     loadPopUpGIF(); //  AlertDialog();
                 } else {
-                    Toast.makeText(this, "Your WIFI connection lost.Let me try to connect again!!!", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, "Your WIFI connection lost.Let me try to connect again!!!", Toast.LENGTH_SHORT).show();
                     if (ssId != null && mPassword != null && wifiManager != null) {
-                        Toast.makeText(this, "We have initiate the connection please, wait for second!!!!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "WIFI connection lost!!!!!", Toast.LENGTH_LONG).show();
                         ConnectPhoneWIFIToHotspot(wifiManager, mPassword, ssId);
                     } else {
                         Toast.makeText(this, "Your QR scan not done properly, please try again!!", Toast.LENGTH_SHORT).show();
@@ -409,33 +409,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //http://192.168.168.110:8080/dispense?type=hot&qty=250
         // http://192.168.168.110:80/dispense?type=HOT&qty=250ML
+        //http://192.168.4.1/TYPE=C&QTY=0250
 
-        String data = URLEncoder.encode("cycle", "UTF-8")
-                + "=" + URLEncoder.encode("CycleID", "UTF-8");
-        String wifiIP = "192.168.168.110:80";
-        String path = "type=" + type + "&qty=" + qty;
-        try {
-            // Defined URL  where to send data
-            URL url = new URL("http://" + wifiIP + "/dispense?" + path);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "text/plain");
-            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-            conn.setConnectTimeout(5000);
-            OutputStream os = conn.getOutputStream();
-            os.write(data.getBytes());
-            os.flush();
-            os.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(type != null) {
+            char firstTypeLetter = type.charAt(0);
+            String strQty = qty.substring(0,3);
+            String data = URLEncoder.encode("cycle", "UTF-8")
+                    + "=" + URLEncoder.encode("CycleID", "UTF-8");
+            String wifiIP = "192.168.4.1";
+            String path = "TYPE=" + firstTypeLetter + "&QTY=0" + strQty;
+            HttpURLConnection urlCconnection = null;
+            try {
+                // Defined URL  where to send data
+                URL url = new URL("http://" + wifiIP + "/?" + path);
+                urlCconnection = (HttpURLConnection) url.openConnection();
+                urlCconnection.setDoOutput(true);
+                urlCconnection.setRequestMethod("GET");
+                urlCconnection.setRequestProperty("Accept", "text/plain");
+                urlCconnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+                urlCconnection.setConnectTimeout(5000);
+                OutputStream os = urlCconnection.getOutputStream();
+                //os.write(data.getBytes());
+                os.flush();
+                os.close();
+                if(urlCconnection.getResponseCode() == HttpURLConnection.HTTP_OK){
+                    Toast.makeText(this,"Connection Successfully !!!"+url,Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(this,"Something wrong with URL"+url,Toast.LENGTH_LONG).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                if(urlCconnection!= null){
+                    urlCconnection.disconnect();
+                }
+            }
         }
     }
-
 }
 
 
