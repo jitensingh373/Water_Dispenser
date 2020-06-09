@@ -28,6 +28,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String ssId;
     private String mPassword;
     private WifiManager wifiManager;
+    private AlertDialog.Builder alertDialogBuilderTimer;
     private AlertDialog alertDialog;
     private Dialog alertDialogBuilder;
 
@@ -105,20 +108,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button750.setOnClickListener((View.OnClickListener) this);
         dispense.setOnClickListener((View.OnClickListener) this);
         connectToWIFI();
-       // AlertDialog();
+        alertDialog();
     }
 
-    private void AlertDialog() {
-        alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Ready to Dispense");
-        alertDialog.setMessage("00:10");
-        alertDialog.getWindow().setLayout(2000, 2000);
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
+    private void alertDialog() {
+        alertDialogBuilderTimer = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_box_timer, null);
+        alertDialogBuilderTimer.setView(dialogView);
+        final TextView tvCount = (TextView) dialogView.findViewById(R.id.textViewID);
+        Button btnStop = (Button) dialogView.findViewById(R.id.btn_stop) ;
+
+        alertDialog = alertDialogBuilderTimer.create();
         alertDialog.show();
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
         new CountDownTimer(11000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                alertDialog.setMessage("" + (millisUntilFinished / 1000));
+                tvCount.setText("" + (millisUntilFinished / 1000));
             }
 
             @Override
@@ -140,6 +153,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }.start();
+
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
+                displayExitCommand();
+            }
+        };
+        handler.postDelayed(runnable, 10000);
     }
 
     @Override
@@ -183,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alertDialogBuilder = new Dialog(
                 this);
         alertDialogBuilder.setContentView(R.layout.alert_box);
+        alertDialogBuilder.setCancelable(false);
         Glide.with(this).load(R.drawable.water_dispense_new)
                 .into((ImageView) alertDialogBuilder.findViewById(R.id.drawable_conn));
         if (!alertDialogBuilder.isShowing()) {
@@ -361,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if (wifiManager.isWifiEnabled()) {
                     dispense.setBackgroundColor(getResources().getColor(R.color.green));
-                    AlertDialog();
+                    loadPopUpGIF(); //  AlertDialog();
                 } else {
                     Toast.makeText(this, "Your WIFI connection lost.Let me try to connect again!!!", Toast.LENGTH_SHORT).show();
                     if (ssId != null && mPassword != null && wifiManager != null) {
