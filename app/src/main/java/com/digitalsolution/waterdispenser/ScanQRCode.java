@@ -38,6 +38,8 @@ public class ScanQRCode extends AppCompatActivity {
                 mScannerView.setOrientationLocked(false);
                 mScannerView.setBeepEnabled(false);
                 mScannerView.initiateScan();
+                Intent intent = new Intent(ScanQRCode.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -68,6 +70,8 @@ public class ScanQRCode extends AppCompatActivity {
             }
             if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Scanned failed !!!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ScanQRCode.this, MainActivity.class);
+                startActivity(intent);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

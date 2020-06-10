@@ -18,6 +18,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -47,6 +48,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -100,15 +102,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button750 = findViewById(R.id.button_750);
         dispense = findViewById(R.id.button_on);
 
-        buttonHot.setOnClickListener((View.OnClickListener) this);
-        buttonNormal.setOnClickListener((View.OnClickListener) this);
-        buttonCold.setOnClickListener((View.OnClickListener) this);
-        button250.setOnClickListener((View.OnClickListener) this);
-        button500.setOnClickListener((View.OnClickListener) this);
-        button750.setOnClickListener((View.OnClickListener) this);
-        dispense.setOnClickListener((View.OnClickListener) this);
+        buttonHot.setOnClickListener(this);
+        buttonNormal.setOnClickListener(this);
+        buttonCold.setOnClickListener(this);
+        button250.setOnClickListener(this);
+        button500.setOnClickListener(this);
+        button750.setOnClickListener(this);
+        dispense.setOnClickListener(this);
         connectToWIFI();
-        //alertDialog();
+
     }
 
     private void alertDialog() {
@@ -117,15 +119,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View dialogView = inflater.inflate(R.layout.alert_box_timer, null);
         alertDialogBuilderTimer.setView(dialogView);
         final TextView tvCount = (TextView) dialogView.findViewById(R.id.textViewID);
-        Button btnStop = (Button) dialogView.findViewById(R.id.btn_stop) ;
-
+        Button btnStop = (Button) dialogView.findViewById(R.id.btn_stop);
         alertDialog = alertDialogBuilderTimer.create();
         alertDialog.show();
 
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialog.dismiss();
+                try {
+                    SendCommandToAppliance("XXXX", "XXXX");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if (alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
+
             }
         });
         new CountDownTimer(11000, 1000) {
@@ -137,13 +146,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinish() {
                 try {
-                    if (mTypeWater != null && mQTYWater != null) {
-                        SendCommandTOAppliance(mTypeWater, mQTYWater);
-                    }
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                try {
+                                    if (mTypeWater != null && mQTYWater != null) {
+                                        SendCommandToAppliance(mTypeWater, mQTYWater);
+                                    }
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    thread.start();
                     final Handler handler = new Handler();
                     final Runnable runnable = new Runnable() {
                         @Override
                         public void run() {
+                            if (alertDialog != null) {
+                                alertDialog.dismiss();
+                            }
                             loadPopUpGIF();
                         }
                     };
@@ -172,24 +198,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void displayExitCommand() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
-        alertDialogBuilder.setTitle("WATER DISPENSE COMPLETED");
-        alertDialogBuilder
-                .setMessage("If you want more water please connect again..Thank You!!!!")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (wifiManager == null) {
-                            wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                        }
-                        if (wifiManager != null && wifiManager.isWifiEnabled()) {
-                            wifiManager.setWifiEnabled(false);
-                            Intent intent1 = new Intent(MainActivity.this, ScanQRCode.class);
-                            startActivity(intent1);
-                        }
-                    }
-                }).show();
+        AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_box_exit, null);
+        alertDialogBuilderTimer.setView(dialogView);
+        Button btnStop = (Button) dialogView.findViewById(R.id.btn_stop);
+        alertDialog = alertDialogBuilderTimer.create();
+        alertDialog.show();
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
+                if (wifiManager == null) {
+                    wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                }
+                if (wifiManager != null && wifiManager.isWifiEnabled()) {
+                    wifiManager.setWifiEnabled(false);
+                    Intent intent1 = new Intent(MainActivity.this, ScanQRCode.class);
+                    startActivity(intent1);
+                }
+            }
+        });
     }
 
     private void loadPopUpGIF() {
@@ -199,6 +230,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alertDialogBuilder.setCancelable(false);
         Glide.with(this).load(R.drawable.water_dispense_new)
                 .into((ImageView) alertDialogBuilder.findViewById(R.id.drawable_conn));
+        Button btnStop = alertDialogBuilder.findViewById(R.id.btn_stop);
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    SendCommandToAppliance("XXXX", "XXXX");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if (alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
+            }
+        });
+
         if (!alertDialogBuilder.isShowing()) {
             alertDialogBuilder.show();
         }
@@ -363,6 +410,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v.getId() == R.id.button_750) {
             button750.setEnabled(true);
             mQTYWater = button750.getText().toString();
+
         } else if (v.getId() == R.id.button_on) {
 
             if (mQTYWater != null && mTypeWater == null) {
@@ -375,13 +423,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if (wifiManager.isWifiEnabled()) {
                     dispense.setBackgroundColor(getResources().getColor(R.color.green));
-                    //loadPopUpGIF();
-                   // AlertDialog();
                     alertDialog();
                 } else {
-                   // Toast.makeText(this, "Your WIFI connection lost.Let me try to connect again!!!", Toast.LENGTH_SHORT).show();
                     if (ssId != null && mPassword != null && wifiManager != null) {
-                        Toast.makeText(this, "WIFI connection lost!!!!!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "WIFI connection lost, Please scan again!!!!!", Toast.LENGTH_LONG).show();
                         ConnectPhoneWIFIToHotspot(wifiManager, mPassword, ssId);
                     } else {
                         Toast.makeText(this, "Your QR scan not done properly, please try again!!", Toast.LENGTH_SHORT).show();
@@ -395,45 +440,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void SendCommandTOAppliance(String type, String qty) throws UnsupportedEncodingException {
-
-        //http://192.168.168.110:8080/dispense?type=hot&qty=250
-        // http://192.168.168.110:80/dispense?type=HOT&qty=250ML
-        //http://192.168.4.1/TYPE=C&QTY=0250
-
-        if(type != null) {
+    private void SendCommandToAppliance(String type, String qty) throws UnsupportedEncodingException {
+        String text = "";
+        if (type != null && qty != null) {
             char firstTypeLetter = type.charAt(0);
-            String strQty = qty.substring(0,3);
-            String data = URLEncoder.encode("cycle", "UTF-8")
-                    + "=" + URLEncoder.encode("CycleID", "UTF-8");
-            String wifiIP = "192.168.4.1";
-            String path = "TYPE=" + firstTypeLetter + "&QTY=0" + strQty;
-            HttpURLConnection urlCconnection = null;
+            String strQty = qty.substring(0, 3);
+            String path = "?TYPE=" + firstTypeLetter + "&QTY=0" + strQty;
+            HttpURLConnection connToESP32 = null;
             try {
                 // Defined URL  where to send data
-                URL url = new URL("http://" + wifiIP + "/?" + path);
-                urlCconnection = (HttpURLConnection) url.openConnection();
-                urlCconnection.setDoOutput(true);
-                urlCconnection.setRequestMethod("GET");
-                urlCconnection.setRequestProperty("Accept", "text/plain");
-                urlCconnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-                urlCconnection.setConnectTimeout(5000);
-                OutputStream os = urlCconnection.getOutputStream();
-                //os.write(data.getBytes());
-                os.flush();
-                os.close();
-                if(urlCconnection.getResponseCode() == HttpURLConnection.HTTP_OK){
-                    Toast.makeText(this,"Connection Successfully !!!"+url,Toast.LENGTH_LONG).show();
-                }else {
-                    Toast.makeText(this,"Something wrong with URL"+url,Toast.LENGTH_LONG).show();
+                URL url = new URL("http://192.168.4.1/" + path);
+                connToESP32 = (HttpURLConnection) url.openConnection();
+                connToESP32.setRequestMethod("GET");
+                connToESP32.setRequestProperty("Accept", "text/plain");
+                connToESP32.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+                connToESP32.setConnectTimeout(5000);
+                int responseCode = connToESP32.getResponseCode();
+                // Get the server response
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    Toast.makeText(this, "Sent request to appliance!!!", Toast.LENGTH_LONG).show();
                 }
 
+                // Get the server response
+            } catch (MalformedURLException e) {
+                text = e.toString();
+                Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                text = e.toString();
+                Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                e.printStackTrace();
-            }
-            finally {
-                if(urlCconnection!= null){
-                    urlCconnection.disconnect();
+                text = e.toString();
+                Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+            } finally {
+                if (connToESP32 != null) {
+                    connToESP32.disconnect();
                 }
             }
         }
