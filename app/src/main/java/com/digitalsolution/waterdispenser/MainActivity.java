@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        intializeView();
+    }
+
+    private void intializeView() {
         Intent intent = getIntent();
         if (intent.getStringExtra("SSID") != null && intent.getStringExtra("Password") != null) {
             ssId = intent.getStringExtra("SSID");
@@ -88,10 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(this, "SSID and password can't be null.." + ssId + mPassword, Toast.LENGTH_SHORT).show();
         }
-        intializeView();
-    }
+        connectToWIFI();
 
-    private void intializeView() {
         textView = findViewById(R.id.inst_multi);
         textView.setText("1. Select the type [hot,normal,cold].\n2. Select the quantity of water.\n3. Click on dispense button.");
         buttonHot = findViewById(R.id.button_hot);
@@ -109,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button500.setOnClickListener(this);
         button750.setOnClickListener(this);
         dispense.setOnClickListener(this);
-        connectToWIFI();
-
     }
 
     private void alertDialog() {
