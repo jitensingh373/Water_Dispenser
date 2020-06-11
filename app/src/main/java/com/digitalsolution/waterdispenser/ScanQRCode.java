@@ -38,8 +38,6 @@ public class ScanQRCode extends AppCompatActivity {
                 mScannerView.setOrientationLocked(false);
                 mScannerView.setBeepEnabled(false);
                 mScannerView.initiateScan();
-                Intent intent = new Intent(ScanQRCode.this, MainActivity.class);
-                startActivity(intent);
             }
         });
     }
