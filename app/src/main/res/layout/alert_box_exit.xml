@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:gravity="center"
+            android:text="WATER DISPENSE COMPLETED !!!!"
+            android:textColor="@color/pink"
+            android:textSize="20sp"
+            android:textStyle="bold">
+        </TextView>
+        <TextView
+            android:id="@+id/TextViewDes"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.4"
+            android:layout_margin="2dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:text="If you want more water please connect again.Thank You !!!!"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            android:textStyle="bold">
+        </TextView>
+
+        <Button
+            android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_weight="0.1"
+            android:layout_marginLeft="135dp"
+            android:background="@drawable/gradient_normal_normal"
+            android:text="OK"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+</FrameLayout>
