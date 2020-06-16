@@ -1,5 +1,7 @@
 package com.digitalsolution.waterdispenser;
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -36,7 +39,7 @@ public class ScanQRCode extends AppCompatActivity {
             public void onClick(View v) {
                 mScannerView = new IntentIntegrator(ScanQRCode.this);
                 mScannerView.setOrientationLocked(false);
-                mScannerView.setBeepEnabled(false);
+                mScannerView.setBeepEnabled(true);
                 mScannerView.initiateScan();
             }
         });
@@ -73,6 +76,30 @@ public class ScanQRCode extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AlertDialog.Builder builder = new AlertDialog.Builder(ScanQRCode.this);
+        builder.setTitle(R.string.app_name);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setCancelable(true);
+        builder.setMessage("Do you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 }
 
 

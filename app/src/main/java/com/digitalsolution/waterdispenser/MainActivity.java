@@ -5,56 +5,31 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
-import android.net.Uri;
-import android.net.wifi.ScanResult;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -72,11 +47,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String ssId;
     private String mPassword;
     private WifiManager wifiManager;
-    private AlertDialog.Builder alertDialogBuilderTimer;
     private AlertDialog alertDialog;
+    private boolean clickStopButton = true;
+    private boolean clickStopFromGif = true;
     private Dialog alertDialogBuilder;
+    private static final int BUILD_VERSION = 29;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,11 +65,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (intent.getStringExtra("SSID") != null && intent.getStringExtra("Password") != null) {
             ssId = intent.getStringExtra("SSID");
             mPassword = intent.getStringExtra("Password");
-        } else {
-            Toast.makeText(this, "SSID and password can't be null.." + ssId + mPassword, Toast.LENGTH_SHORT).show();
         }
-        connectToWIFI();
-
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (BUILD_VERSION <= currentapiVersion) {
+            Toast.makeText(this, "Connection done with WIFI !!", Toast.LENGTH_LONG).show();
+        } else {
+            connectToWIFI();
+            Toast.makeText(this, "Connection done with WIFI !!", Toast.LENGTH_LONG).show();
+        }
         textView = findViewById(R.id.inst_multi);
         textView.setText("1. Select the type [hot,normal,cold].\n2. Select the quantity of water.\n3. Click on dispense button.");
         buttonHot = findViewById(R.id.button_hot);
@@ -113,8 +92,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dispense.setOnClickListener(this);
     }
 
-    private void alertDialog() {
-        alertDialogBuilderTimer = new AlertDialog.Builder(this);
+    private void resetButtonAction() {
+        mTypeWater = null;
+        mQTYWater = null;
+        Drawable drawable = getResources().getDrawable(R.drawable.gradient_normal_orange);
+        dispense.setBackground(drawable);
+    }
+
+    private void alertDialogFirstPopUp() {
+        AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this).setCancelable(false);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_box_timer, null);
         alertDialogBuilderTimer.setView(dialogView);
@@ -122,19 +108,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btnStop = (Button) dialogView.findViewById(R.id.btn_stop);
         alertDialog = alertDialogBuilderTimer.create();
         alertDialog.show();
-
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    SendCommandToAppliance("XXXX", "XXXX");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                if (alertDialog.isShowing()) {
+                clickStopButton = false;
+                Toast.makeText(MainActivity.this, "User Stopped !!!", Toast.LENGTH_SHORT).show();
+                resetButtonAction();
+                if (alertDialog != null) {
                     alertDialog.dismiss();
                 }
-
             }
         });
         new CountDownTimer(11000, 1000) {
@@ -145,39 +127,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFinish() {
-                try {
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                }
+                displayGIFPopUP();
+            }
+
+            private void displayGIFPopUP() {
+                if (clickStopButton) {
+                    try {
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
                                 try {
                                     if (mTypeWater != null && mQTYWater != null) {
-                                        SendCommandToAppliance(mTypeWater, mQTYWater);
+                                        char firstTypeLetterType = mTypeWater.charAt(0);
+                                        String strQty = "0" + mQTYWater.substring(0, 3);
+                                        SendCommandToAppliance(firstTypeLetterType, strQty);
+                                        clickStopButton = true;
                                     }
-                                } catch (UnsupportedEncodingException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
-                        }
-                    });
-                    thread.start();
-                    final Handler handler = new Handler();
-                    final Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            if (alertDialog != null) {
-                                alertDialog.dismiss();
+                        });
+                        thread.start();
+                        final Handler handler = new Handler();
+                        final Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                loadPopUpGIF();
                             }
-                            loadPopUpGIF();
-                        }
-                    };
-                    handler.postDelayed(runnable, 0);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        };
+                        handler.postDelayed(runnable, 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
         }.start();
     }
 
@@ -198,26 +186,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void displayExitCommand() {
-        AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this);
+        final AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this).setCancelable(false);;
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_box_exit, null);
         alertDialogBuilderTimer.setView(dialogView);
-        Button btnStop = (Button) dialogView.findViewById(R.id.btn_stop);
+        Button btnStop = dialogView.findViewById(R.id.btn_stop);
         alertDialog = alertDialogBuilderTimer.create();
         alertDialog.show();
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (alertDialog.isShowing()) {
-                    alertDialog.dismiss();
-                }
-                if (wifiManager == null) {
-                    wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                }
                 if (wifiManager != null && wifiManager.isWifiEnabled()) {
                     wifiManager.setWifiEnabled(false);
-                    Intent intent1 = new Intent(MainActivity.this, ScanQRCode.class);
-                    startActivity(intent1);
+                }
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                }
+                int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                if (BUILD_VERSION <= currentapiVersion) {
+                    startActivity(new Intent(MainActivity.this, OpenWifiNetworkAdd.class));
+                } else {
+                    startActivity(new Intent(MainActivity.this, ScanQRCode.class));
                 }
             }
         });
@@ -231,45 +220,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Glide.with(this).load(R.drawable.water_dispense_new)
                 .into((ImageView) alertDialogBuilder.findViewById(R.id.drawable_conn));
         Button btnStop = alertDialogBuilder.findViewById(R.id.btn_stop);
-
+        alertDialogBuilder.show();
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clickStopFromGif = false;
                 try {
-                    SendCommandToAppliance("XXXX", "XXXX");
+                    SendCommandToAppliance('S', "STOP");
+                    resetButtonAction();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
+                    clickStopFromGif = false;
                 }
-                if (alertDialog.isShowing()) {
-                    alertDialog.dismiss();
+                if (alertDialogBuilder != null) {
+                    alertDialogBuilder.dismiss();
                 }
             }
         });
-
-        if (!alertDialogBuilder.isShowing()) {
-            alertDialogBuilder.show();
-        }
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (alertDialogBuilder.isShowing()) {
-                    alertDialogBuilder.dismiss();
+        if (clickStopFromGif) {
+            final Handler handler = new Handler();
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (alertDialogBuilder != null) {
+                        alertDialogBuilder.dismiss();
+                    }
+                    displayExitCommand();
+                    clickStopFromGif = true;
                 }
-                displayExitCommand();
-            }
-        };
-        handler.postDelayed(runnable, 10000);
-
+            };
+            handler.postDelayed(runnable, 10000);
+        }
     }
 
     private void connectToWIFI() {
         Toast.makeText(this, "Started.." + ssId + mPassword, Toast.LENGTH_SHORT).show();
         conf = new WifiConfiguration();
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-        Toast.makeText(this, "Started scanning bb.." + wifiManager.getConnectionInfo(), Toast.LENGTH_SHORT).show();
-
         Toast.makeText(this, "WIFI enabled.." + wifiManager.isWifiEnabled(), Toast.LENGTH_SHORT).show();
 
         new Thread(new Runnable() {
@@ -294,10 +281,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (selectedWifiNetwork != null) {
                 WifiConfiguration config = getProfileForConnection(selectedWifiNetwork, password, wifiManager);
                 if (config != null) {
-                    wifiManager.disconnect();
-                    wifiManager.enableNetwork(config.networkId, true);
-                    wifiManager.reconnect();
-                    wifiManager.enableNetwork(config.networkId, true);
+                    if (config.networkId < 0) {
+                        WifiConfiguration config1 = getProfileToRemove(selectedWifiNetwork, wifiManager);
+                        wifiManager.disconnect();
+                        wifiManager.enableNetwork(config1.networkId, true);
+                        wifiManager.reconnect();
+                        wifiManager.enableNetwork(config1.networkId, true);
+                    } else {
+                        wifiManager.disconnect();
+                        wifiManager.enableNetwork(config.networkId, true);
+                        wifiManager.reconnect();
+                        wifiManager.enableNetwork(config.networkId, true);
+                    }
                 }
             }
         }
@@ -310,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (wifiManager != null) {
             if (wifiManager.getConfiguredNetworks() != null) {
                 for (WifiConfiguration wifi : wifiManager.getConfiguredNetworks()) {
-                    if (wifi.SSID != null && removeSSidQuotes(wifi.SSID.toUpperCase()).contains(macAddress))
+                    if (wifi.SSID != null && wifi.SSID.contains(macAddress))
                         return wifi;
                 }
             }
@@ -377,11 +372,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return null;
     }
 
-    public String removeSSidQuotes(String ssid) {
-        return ssid.replace('"', ' ').trim();
-    }
-
-
     private WifiManager initWifiManager(WifiManager wifiManager) {
         if (wifiManager == null) {
             wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -422,14 +412,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 }
                 if (wifiManager.isWifiEnabled()) {
+                    clickStopButton = true;
                     dispense.setBackgroundColor(getResources().getColor(R.color.green));
-                    alertDialog();
+                    alertDialogFirstPopUp();
                 } else {
                     if (ssId != null && mPassword != null && wifiManager != null) {
                         Toast.makeText(this, "WIFI connection lost, Please scan again!!!!!", Toast.LENGTH_LONG).show();
                         ConnectPhoneWIFIToHotspot(wifiManager, mPassword, ssId);
                     } else {
-                        Toast.makeText(this, "Your QR scan not done properly, please try again!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No Wifi connection.Please scan QR code again !!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -440,12 +431,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void SendCommandToAppliance(String type, String qty) throws UnsupportedEncodingException {
+    private void SendCommandToAppliance(char type, String qty) throws UnsupportedEncodingException {
         String text = "";
-        if (type != null && qty != null) {
-            char firstTypeLetter = type.charAt(0);
-            String strQty = qty.substring(0, 3);
-            String path = "?TYPE=" + firstTypeLetter + "&QTY=0" + strQty;
+        if (qty != null) {
+            String path = "?TYPE=" + type + "&QTY=" + qty;
             HttpURLConnection connToESP32 = null;
             try {
                 // Defined URL  where to send data
@@ -454,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 connToESP32.setRequestMethod("GET");
                 connToESP32.setRequestProperty("Accept", "text/plain");
                 connToESP32.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-                connToESP32.setConnectTimeout(5000);
+                connToESP32.setConnectTimeout(3000);
                 int responseCode = connToESP32.getResponseCode();
                 // Get the server response
                 if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -464,12 +453,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Get the server response
             } catch (MalformedURLException e) {
                 text = e.toString();
+                clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 text = e.toString();
+                clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 text = e.toString();
+                clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } finally {
                 if (connToESP32 != null) {
