@@ -384,21 +384,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.button_hot) {
             buttonHot.setEnabled(true);
+            buttonHot.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_hot));
+            buttonNormal.setBackground(getResources().getDrawable(R.drawable.gradient_normal_normal));
+            buttonCold.setBackground(getResources().getDrawable(R.drawable.gradient_normal_cold));
             mTypeWater = buttonHot.getText().toString();
         } else if (v.getId() == R.id.button_normal) {
             buttonNormal.setEnabled(true);
+            buttonHot.setBackground(getResources().getDrawable(R.drawable.gradient_normal_hot));
+            buttonNormal.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_normal));
+            buttonCold.setBackground(getResources().getDrawable(R.drawable.gradient_normal_cold));
             mTypeWater = buttonNormal.getText().toString();
         } else if (v.getId() == R.id.button_cold) {
             buttonCold.setEnabled(true);
+            buttonHot.setBackground(getResources().getDrawable(R.drawable.gradient_normal_hot));
+            buttonNormal.setBackground(getResources().getDrawable(R.drawable.gradient_normal_normal));
+            buttonCold.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_cold));
             mTypeWater = buttonCold.getText().toString();
         } else if (v.getId() == R.id.button_250) {
             button250.setEnabled(true);
+            button250.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_oneml));
+            button500.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
+            button750.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button250.getText().toString();
         } else if (v.getId() == R.id.button_500) {
             button500.setEnabled(true);
+            button500.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_twoml));
+            button250.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
+            button750.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button500.getText().toString();
         } else if (v.getId() == R.id.button_750) {
             button750.setEnabled(true);
+            button750.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_threeml));
+            button500.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
+            button250.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button750.getText().toString();
 
         } else if (v.getId() == R.id.button_on) {
