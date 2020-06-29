@@ -22,6 +22,7 @@ public class ScanQRCode extends AppCompatActivity {
     private IntentIntegrator mScannerView;
     private String ssId;
     private String mPassword;
+    private String ssIdUser = "Chetan";
 
     @Override
 
@@ -64,10 +65,14 @@ public class ScanQRCode extends AppCompatActivity {
                     password = arrOfStr1[0];
                     mPassword = password;
                 }
-                Intent intent = new Intent(ScanQRCode.this, MainActivity.class);
-                intent.putExtra("SSID", ssid);
-                intent.putExtra("Password", password);
-                startActivity(intent);
+                if (ssId.equalsIgnoreCase(ssIdUser)) {
+                    Intent intent = new Intent(ScanQRCode.this, MainActivity.class);
+                    intent.putExtra("SSID", ssid);
+                    intent.putExtra("Password", password);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(this, "Not Registered User!!!", Toast.LENGTH_SHORT).show();
+                }
             }
             if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Scanned failed !!!", Toast.LENGTH_SHORT).show();

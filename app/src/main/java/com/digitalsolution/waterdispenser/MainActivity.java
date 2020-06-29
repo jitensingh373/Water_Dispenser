@@ -471,15 +471,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Get the server response
             } catch (MalformedURLException e) {
                 text = e.toString();
-                clickStopFromGif = false;
+               // clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 text = e.toString();
-                clickStopFromGif = false;
+               // clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 text = e.toString();
-                clickStopFromGif = false;
+              //  clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } finally {
                 if (connToESP32 != null) {

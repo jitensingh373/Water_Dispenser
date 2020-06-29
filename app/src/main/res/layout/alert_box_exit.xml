@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.1"
+            android:layout_weight="0.2"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
@@ -23,7 +23,7 @@
             android:text="WATER DISPENSE COMPLETED !!"
             android:textColor="@color/pink"
             android:layout_margin="10dp"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:textStyle="bold">
         </TextView>
         <TextView
@@ -31,11 +31,11 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="0.1"
+            android:layout_weight="0.8"
             android:gravity="center"
             android:text="If you want more water please connect again.Thank You !!"
             android:textColor="@android:color/white"
-            android:textSize="10sp"
+            android:textSize="18sp"
             android:textStyle="bold">
         </TextView>
 
@@ -46,7 +46,7 @@
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_weight="0.1"
+            android:layout_weight="0.2"
             android:background="@drawable/gradient_normal_normal"
             android:text="OK"
             android:textColor="@android:color/white"
