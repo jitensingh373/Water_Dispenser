@@ -65,7 +65,7 @@ public class ScanQRCode extends AppCompatActivity {
                     password = arrOfStr1[0];
                     mPassword = password;
                 }
-                if (ssId.equalsIgnoreCase(ssIdUser)) {
+                if (ssId.trim().equalsIgnoreCase(ssIdUser)) {
                     Intent intent = new Intent(ScanQRCode.this, MainActivity.class);
                     intent.putExtra("SSID", ssid);
                     intent.putExtra("Password", password);
