@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean clickStopFromGif = true;
     private Dialog alertDialogBuilder;
     private static final int BUILD_VERSION = 29;
+    private int countValueEnd = 12000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (BUILD_VERSION <= currentapiVersion) {
-            Toast.makeText(this, "Connection done with WIFI !!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Connected.. ", Toast.LENGTH_LONG).show();
         } else {
             connectToWIFI();
-            Toast.makeText(this, "Connection done with WIFI !!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "connected.. ", Toast.LENGTH_LONG).show();
         }
         textView = findViewById(R.id.inst_multi);
         textView.setText("1. Select the type [hot,normal,cold].\n2. Select the quantity of water.\n3. Click on dispense button.");
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mQTYWater = null;
         Drawable drawable = getResources().getDrawable(R.drawable.gradient_normal_orange);
         dispense.setBackground(drawable);
+        countValueEnd = countValueEnd + 0;
     }
 
     private void alertDialogFirstPopUp() {
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-        new CountDownTimer(11000, 1000) {
+        new CountDownTimer(6000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 tvCount.setText("" + (millisUntilFinished / 1000));
@@ -249,7 +251,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clickStopFromGif = true;
                 }
             };
-            handler.postDelayed(runnable, 10000);
+            handler.postDelayed(runnable, countValueEnd);
+
         }
     }
 
@@ -406,18 +409,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             button500.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             button750.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button250.getText().toString();
+            countValueEnd = countValueEnd + 0;
         } else if (v.getId() == R.id.button_500) {
             button500.setEnabled(true);
             button500.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_twoml));
             button250.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             button750.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button500.getText().toString();
+            countValueEnd = countValueEnd + 13000;
         } else if (v.getId() == R.id.button_750) {
             button750.setEnabled(true);
             button750.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_threeml));
             button500.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             button250.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button750.getText().toString();
+            countValueEnd = countValueEnd + 23000;
 
         } else if (v.getId() == R.id.button_on) {
 
