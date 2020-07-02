@@ -14,8 +14,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -27,10 +29,12 @@ import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView textView;
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean clickStopFromGif = true;
     private Dialog alertDialogBuilder;
     private static final int BUILD_VERSION = 29;
-    private int countValueEnd = 12000;
+    private int countValueEnd = 14000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +73,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (BUILD_VERSION <= currentapiVersion) {
-            Toast.makeText(this, "Connected.. ", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Connected to Whirlpool Dispenser !! ", Toast.LENGTH_SHORT).show();
         } else {
             connectToWIFI();
-            Toast.makeText(this, "connected.. ", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Connected to Whirlpool Dispenser !!  ", Toast.LENGTH_SHORT).show();
         }
         textView = findViewById(R.id.inst_multi);
-        textView.setText("1. Select the type [hot,normal,cold].\n2. Select the quantity of water.\n3. Click on dispense button.");
+        textView.setText("1. Turn off mobile Data.\n2. Select the type [hot,normal,cold].\n2. Select the quantity of water.\n3. Click on dispense button.");
         buttonHot = findViewById(R.id.button_hot);
         buttonNormal = findViewById(R.id.button_normal);
         buttonCold = findViewById(R.id.button_cold);
@@ -114,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 clickStopButton = false;
-                Toast.makeText(MainActivity.this, "User Stopped !!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "User Stopped, Resetting Selected Changes !!!", Toast.LENGTH_SHORT).show();
                 resetButtonAction();
                 if (alertDialog != null) {
                     alertDialog.dismiss();
@@ -188,7 +192,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void displayExitCommand() {
-        final AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this).setCancelable(false);;
+        final AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this).setCancelable(false);
+        ;
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_box_exit, null);
         alertDialogBuilderTimer.setView(dialogView);
@@ -219,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 this);
         alertDialogBuilder.setContentView(R.layout.alert_box);
         alertDialogBuilder.setCancelable(false);
-        Glide.with(this).load(R.drawable.water_dispense_new)
+        Glide.with(this).load(R.drawable.animation_image)
                 .into((ImageView) alertDialogBuilder.findViewById(R.id.drawable_conn));
         Button btnStop = alertDialogBuilder.findViewById(R.id.btn_stop);
         alertDialogBuilder.show();
@@ -227,13 +232,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 clickStopFromGif = false;
-                try {
-                    SendCommandToAppliance('S', "STOP");
-                    resetButtonAction();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    clickStopFromGif = false;
-                }
+                resetButtonAction();
+                Toast.makeText(MainActivity.this, "Stopped command sent to dispenser !!!", Toast.LENGTH_SHORT).show();
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            SendCommandToAppliance('S', "STOP");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            clickStopFromGif = false;
+                        }
+                    }
+                });
+                thread.start();
                 if (alertDialogBuilder != null) {
                     alertDialogBuilder.dismiss();
                 }
@@ -257,10 +269,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void connectToWIFI() {
-        Toast.makeText(this, "Started.." + ssId + mPassword, Toast.LENGTH_SHORT).show();
         conf = new WifiConfiguration();
         wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        Toast.makeText(this, "WIFI enabled.." + wifiManager.isWifiEnabled(), Toast.LENGTH_SHORT).show();
 
         new Thread(new Runnable() {
             @Override
@@ -416,14 +426,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             button250.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             button750.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button500.getText().toString();
-            countValueEnd = countValueEnd + 13000;
+            countValueEnd = countValueEnd + 14000;
         } else if (v.getId() == R.id.button_750) {
             button750.setEnabled(true);
             button750.setBackground(getResources().getDrawable(R.drawable.gradient_clicked_button_threeml));
             button500.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             button250.setBackground(getResources().getDrawable(R.drawable.gradient_normal_button));
             mQTYWater = button750.getText().toString();
-            countValueEnd = countValueEnd + 23000;
+            countValueEnd = countValueEnd + 26000;
 
         } else if (v.getId() == R.id.button_on) {
 
@@ -477,15 +487,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Get the server response
             } catch (MalformedURLException e) {
                 text = e.toString();
-               // clickStopFromGif = false;
+                clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 text = e.toString();
-               // clickStopFromGif = false;
+                clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 text = e.toString();
-              //  clickStopFromGif = false;
+                 clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } finally {
                 if (connToESP32 != null) {

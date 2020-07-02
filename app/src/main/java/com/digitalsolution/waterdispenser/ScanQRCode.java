@@ -5,27 +5,33 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.lang.reflect.Method;
+import java.util.Objects;
+
 public class ScanQRCode extends AppCompatActivity {
     Button btnAction;
     private IntentIntegrator mScannerView;
     private String ssId;
     private String mPassword;
-    private String ssIdUser = "Chetan";
 
     @Override
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanned_barcode);
@@ -35,7 +41,20 @@ public class ScanQRCode extends AppCompatActivity {
 
     private void initViews() {
         btnAction = findViewById(R.id.btnAction);
+        /*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if(getMobileDataState()){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setMobileDataState(false);
+                    }
+                }).start();
+            }
+        }
+         */
         btnAction.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 mScannerView = new IntentIntegrator(ScanQRCode.this);
@@ -44,6 +63,28 @@ public class ScanQRCode extends AppCompatActivity {
                 mScannerView.initiateScan();
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void setMobileDataState(boolean mobileDataEnabled) {
+        try {
+            TelephonyManager telephonyService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            Method setMobileDataEnabledMethod = Objects.requireNonNull(telephonyService).getClass().getDeclaredMethod("setDataEnabled", boolean.class);
+            setMobileDataEnabledMethod.invoke(telephonyService, mobileDataEnabled);
+        } catch (Exception ex) {
+            Log.e("MainActivity", "Error setting mobile data state", ex);
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public boolean getMobileDataState() {
+        try {
+            TelephonyManager telephonyService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            Method getMobileDataEnabledMethod = Objects.requireNonNull(telephonyService).getClass().getDeclaredMethod("getDataEnabled");
+            return (boolean) (Boolean) getMobileDataEnabledMethod.invoke(telephonyService);
+        } catch (Exception ex) {
+            Log.e("MainActivity", "Error getting mobile data state", ex);
+        }
+        return false;
     }
 
     @Override
@@ -65,17 +106,13 @@ public class ScanQRCode extends AppCompatActivity {
                     password = arrOfStr1[0];
                     mPassword = password;
                 }
-                if (ssId.trim().equalsIgnoreCase(ssIdUser)) {
                     Intent intent = new Intent(ScanQRCode.this, MainActivity.class);
                     intent.putExtra("SSID", ssid);
                     intent.putExtra("Password", password);
                     startActivity(intent);
-                }else{
-                    Toast.makeText(this, "Not Registered User!!!", Toast.LENGTH_SHORT).show();
-                }
             }
             if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Scanned failed !!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Scanned failed, try again !!!", Toast.LENGTH_SHORT).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
