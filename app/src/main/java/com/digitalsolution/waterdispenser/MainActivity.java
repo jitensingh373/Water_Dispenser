@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 this);
         alertDialogBuilder.setContentView(R.layout.alert_box);
         alertDialogBuilder.setCancelable(false);
-        Glide.with(this).load(R.drawable.animation_image)
+        Glide.with(this).load(R.drawable.animation)
                 .into((ImageView) alertDialogBuilder.findViewById(R.id.drawable_conn));
         Button btnStop = alertDialogBuilder.findViewById(R.id.btn_stop);
         alertDialogBuilder.show();
