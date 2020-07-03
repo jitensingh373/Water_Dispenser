@@ -1,15 +1,9 @@
 package com.digitalsolution.waterdispenser;
-
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,9 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
-import java.lang.reflect.Method;
-import java.util.Objects;
 
 public class ScanQRCode extends AppCompatActivity {
     Button btnAction;
@@ -41,18 +32,6 @@ public class ScanQRCode extends AppCompatActivity {
 
     private void initViews() {
         btnAction = findViewById(R.id.btnAction);
-        /*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if(getMobileDataState()){
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setMobileDataState(false);
-                    }
-                }).start();
-            }
-        }
-         */
         btnAction.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -63,28 +42,6 @@ public class ScanQRCode extends AppCompatActivity {
                 mScannerView.initiateScan();
             }
         });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void setMobileDataState(boolean mobileDataEnabled) {
-        try {
-            TelephonyManager telephonyService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            Method setMobileDataEnabledMethod = Objects.requireNonNull(telephonyService).getClass().getDeclaredMethod("setDataEnabled", boolean.class);
-            setMobileDataEnabledMethod.invoke(telephonyService, mobileDataEnabled);
-        } catch (Exception ex) {
-            Log.e("MainActivity", "Error setting mobile data state", ex);
-        }
-    }
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public boolean getMobileDataState() {
-        try {
-            TelephonyManager telephonyService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            Method getMobileDataEnabledMethod = Objects.requireNonNull(telephonyService).getClass().getDeclaredMethod("getDataEnabled");
-            return (boolean) (Boolean) getMobileDataEnabledMethod.invoke(telephonyService);
-        } catch (Exception ex) {
-            Log.e("MainActivity", "Error getting mobile data state", ex);
-        }
-        return false;
     }
 
     @Override

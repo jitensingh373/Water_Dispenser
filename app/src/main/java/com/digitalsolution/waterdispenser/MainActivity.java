@@ -1,6 +1,5 @@
 package com.digitalsolution.waterdispenser;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,14 +9,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
-import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,12 +24,10 @@ import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView textView;
@@ -487,15 +480,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Get the server response
             } catch (MalformedURLException e) {
                 text = e.toString();
-                clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 text = e.toString();
-                clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 text = e.toString();
-                 clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } finally {
                 if (connToESP32 != null) {
