@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends MyBaseActivity implements View.OnClickListener {
     private TextView textView;
     private Button buttonHot;
     private Button buttonNormal;
@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void displayExitCommand() {
         final AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this).setCancelable(false);
-        ;
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_box_exit, null);
         alertDialogBuilderTimer.setView(dialogView);
@@ -493,6 +492,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }
 

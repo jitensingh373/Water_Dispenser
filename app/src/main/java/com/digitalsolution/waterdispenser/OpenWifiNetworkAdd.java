@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -14,18 +13,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class OpenWifiNetworkAdd extends AppCompatActivity {
     static final int STATIC_RESULT = 2;
+    Button btnAction ;
+    Button open;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.open_setting);
-        Button open = findViewById(R.id.btnAction_to_Connect_wifi);
-        TextView textView = findViewById(R.id.instruction);
+        open = findViewById(R.id.btnAction_to_Connect_wifi);
+        textView = findViewById(R.id.instruction);
         textView.setText("1. Read all steps carefully. " +
                 "\n2. You have to click on Connect To Wifi button." +
                 "\n3. You will be navigated to wifi add network screen" +
                 "\n4. If wifi not enable, enable it" +
-                "\n5. Click on add network and scan QR code." +
+                "\n5. Please click on Jal Durg in wifi list and enter password." +
                 "\n6. Once connected to wifi,back pressed.");
         open.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,10 +45,26 @@ public class OpenWifiNetworkAdd extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == STATIC_RESULT) {
-            startActivity(new Intent(this, MainActivity.class));
-            Toast.makeText(this, "Connected.. ", Toast.LENGTH_LONG).show();
+            goTOMainScreen();
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void goTOMainScreen(){
+        btnAction = findViewById(R.id.btnAction_to_Connect);
+        open.setVisibility(View.GONE);
+        btnAction.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.GONE);
+        TextView textView = findViewById(R.id.instruction1);
+        textView.setVisibility(View.GONE);
+        btnAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OpenWifiNetworkAdd.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
