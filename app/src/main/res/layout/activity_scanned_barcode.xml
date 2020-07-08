@@ -41,7 +41,7 @@
         android:layout_centerVertical="true"
         android:layout_margin="20dp"
         android:layout_gravity="center"
-        android:background="@mipmap/icon_image">
+        android:background="@drawable/icon_images">
 
     </ImageView>
     <Button

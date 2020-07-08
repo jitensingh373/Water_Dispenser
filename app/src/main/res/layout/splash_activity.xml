@@ -6,6 +6,6 @@
         android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/icon_image">
+        android:background="@drawable/icon_images">
     </LinearLayout>
 </LinearLayout>
