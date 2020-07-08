@@ -185,30 +185,32 @@ public class MainActivity extends MyBaseActivity implements View.OnClickListener
     }
 
     private void displayExitCommand() {
-        final AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this).setCancelable(false);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_box_exit, null);
-        alertDialogBuilderTimer.setView(dialogView);
-        Button btnStop = dialogView.findViewById(R.id.btn_stop);
-        alertDialog = alertDialogBuilderTimer.create();
-        alertDialog.show();
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (wifiManager != null && wifiManager.isWifiEnabled()) {
-                    wifiManager.setWifiEnabled(false);
+        if (clickStopFromGif) {
+            final AlertDialog.Builder alertDialogBuilderTimer = new AlertDialog.Builder(this).setCancelable(false);
+            LayoutInflater inflater = this.getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.alert_box_exit, null);
+            alertDialogBuilderTimer.setView(dialogView);
+            Button btnStop = dialogView.findViewById(R.id.btn_stop);
+            alertDialog = alertDialogBuilderTimer.create();
+            alertDialog.show();
+            btnStop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (wifiManager != null && wifiManager.isWifiEnabled()) {
+                        wifiManager.setWifiEnabled(false);
+                    }
+                    if (alertDialog != null) {
+                        alertDialog.dismiss();
+                    }
+                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                    if (BUILD_VERSION <= currentapiVersion) {
+                        startActivity(new Intent(MainActivity.this, OpenWifiNetworkAdd.class));
+                    } else {
+                        startActivity(new Intent(MainActivity.this, ScanQRCode.class));
+                    }
                 }
-                if (alertDialog != null) {
-                    alertDialog.dismiss();
-                }
-                int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-                if (BUILD_VERSION <= currentapiVersion) {
-                    startActivity(new Intent(MainActivity.this, OpenWifiNetworkAdd.class));
-                } else {
-                    startActivity(new Intent(MainActivity.this, ScanQRCode.class));
-                }
-            }
-        });
+            });
+        }
     }
 
     private void loadPopUpGIF() {
@@ -482,6 +484,7 @@ public class MainActivity extends MyBaseActivity implements View.OnClickListener
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 text = e.toString();
+                //clickStopFromGif = false;
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 text = e.toString();
