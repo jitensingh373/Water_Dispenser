@@ -3,12 +3,13 @@ package com.digitalsolution.waterdispenser;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
 public class MyBaseActivity extends Activity {
 
-    public static final long DISCONNECT_TIMEOUT = 120000;
+    public static final long DISCONNECT_TIMEOUT = 6000;
 
     private Handler disconnectHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -24,12 +25,13 @@ public class MyBaseActivity extends Activity {
             alertDialog.setCancelable(false);
             alertDialog.setTitle("Alert");
             alertDialog
-                    .setMessage("Session Timeout, please try again.");
+                    .setMessage("\"Session Time Out\" - Please Scan Again");
             alertDialog.setNegativeButton("OK",
                     new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
-                            finishAffinity();
+                            Intent intent = new Intent(MyBaseActivity.this, ScanQRCode.class);
+                            startActivity(intent);
                             dialog.cancel();
                         }
                     });
