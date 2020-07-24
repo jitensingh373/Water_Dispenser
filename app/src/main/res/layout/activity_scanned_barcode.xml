@@ -10,16 +10,18 @@
         layout="@layout/toolbarlayout"
         android:layout_width="match_parent"
         android:layout_height="46dp" />
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="0.05"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:src="@drawable/logo0">
-    </ImageView>
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="@string/logo_replacement"
+        android:layout_gravity="center"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,9 +59,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:layout_gravity="right"
-        android:text="Developed by Whirlpool GTEC"
+        android:text="Developed by GTEC(Beta version)"
         android:textSize="10sp"
         android:textColor="@android:color/black"
         android:textStyle="bold"/>

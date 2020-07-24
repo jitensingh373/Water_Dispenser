@@ -16,7 +16,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_centerInParent="true"
@@ -24,8 +24,10 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_weight="0.3"
-            android:src="@drawable/logo0">
-        </ImageView>
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="30dp"
+            android:text="@string/logo_replacement"></TextView>
 
         <TextView
             android:id="@+id/instruction1"
