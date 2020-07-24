@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WDispenser</string>
     <string name="logo_replacement">GTEC Internal Use Only</string>
+    <string name="developed_by">Developed by GTEC(Beta version)</string>
 </resources>
