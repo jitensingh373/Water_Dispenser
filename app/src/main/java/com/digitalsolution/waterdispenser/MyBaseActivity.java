@@ -2,15 +2,17 @@ package com.digitalsolution.waterdispenser;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 
 public class MyBaseActivity extends Activity {
 
-    public static final long DISCONNECT_TIMEOUT = 6000;
-
+    public static final long DISCONNECT_TIMEOUT = 120000;
+    private WifiManager  wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);;
     private Handler disconnectHandler = new Handler() {
         public void handleMessage(Message msg) {
         }
@@ -30,6 +32,9 @@ public class MyBaseActivity extends Activity {
                     new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
+                            if (wifiManager != null && wifiManager.isWifiEnabled()) {
+                                wifiManager.setWifiEnabled(false);
+                            }
                             Intent intent = new Intent(MyBaseActivity.this, ScanQRCode.class);
                             startActivity(intent);
                             dialog.cancel();
@@ -37,8 +42,6 @@ public class MyBaseActivity extends Activity {
                     });
 
             alertDialog.show();
-
-            // Perform any required operation on disconnect
         }
     };
 
