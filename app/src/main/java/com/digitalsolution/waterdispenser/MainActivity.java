@@ -182,6 +182,9 @@ public class MainActivity extends MyBaseActivity implements View.OnClickListener
         if (alertDialog != null) {
             alertDialog.dismiss();
         }
+        if (wifiManager != null && wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        }
     }
 
     private void displayExitCommand() {
