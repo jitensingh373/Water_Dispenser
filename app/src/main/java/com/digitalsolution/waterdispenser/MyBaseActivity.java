@@ -42,7 +42,7 @@ public class MyBaseActivity extends Activity {
                            if (wifiManager != null && wifiManager.isWifiEnabled()) {
                                 wifiManager.setWifiEnabled(false);
                             }
-                            Intent intent = new Intent(MyBaseActivity.this, ScanQRCode.class);
+                            Intent intent = new Intent(MyBaseActivity.this, SplashActivity.class);
                             startActivity(intent);
                             dialog.cancel();
                         }
