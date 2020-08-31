@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "366230270514",
+    "firebase_url": "https://digital-water-dispenser.firebaseio.com",
+    "project_id": "digital-water-dispenser",
+    "storage_bucket": "digital-water-dispenser.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366230270514:android:e5ad0c45b85cc425c8022b",
+        "android_client_info": {
+          "package_name": "com.digitalsolution.waterdispenser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366230270514-jjqmv96mflnaqr8q8khlqq9ea7rvggot.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.digitalsolution.waterdispenser",
+            "certificate_hash": "d7003f00903f13726529228b6069b5f0cb6e729b"
+          }
+        },
+        {
+          "client_id": "366230270514-iictvrkuar2ue4ujibkq8jth93nn01qm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjMse_TYVP41_cqhW07_eS9x-xwAsDt60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366230270514-iictvrkuar2ue4ujibkq8jth93nn01qm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "366230270514-m0cg1182s1jdlftlunidge73n32e1f5l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whirlpool.wdispenser"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
