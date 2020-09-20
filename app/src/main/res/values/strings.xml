@@ -2,4 +2,6 @@
     <string name="app_name">WDispenser</string>
     <string name="logo_replacement">GTEC Internal Use Only</string>
     <string name="developed_by">Developed by GTEC(Beta version)</string>
+    <string name="notifications_admin_channel_name">jitu </string>
+    <string name="notifications_admin_channel_description">jitu 2 </string>
 </resources>
