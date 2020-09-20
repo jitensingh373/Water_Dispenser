@@ -29,6 +29,10 @@ class ScanQRCode : AppCompatActivity() {
     private fun initViews() {
         btnAction = findViewById(R.id.btnAction)
         btnAction?.setOnClickListener(View.OnClickListener {
+
+            val intent = Intent(this@ScanQRCode, MainActivity::class.java)
+            startActivity(intent)
+
             mScannerView = IntentIntegrator(this@ScanQRCode)
             mScannerView!!.setOrientationLocked(false)
             mScannerView!!.setBeepEnabled(true)

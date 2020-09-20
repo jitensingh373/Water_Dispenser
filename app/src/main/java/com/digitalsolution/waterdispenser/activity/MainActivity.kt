@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.digitalsolution.waterdispenser.R
 import com.digitalsolution.waterdispenser.activity.data.UserConsumptionDetails
+import com.digitalsolution.waterdispenser.data.UserDetailsConstant
 import com.digitalsolution.waterdispenser.data.UserDetailsConstant.FIREBASE_NODE_CHILD
 import java.io.IOException
 import java.io.UnsupportedEncodingException
@@ -39,6 +40,7 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
     private var button500: Button? = null
     private var button750: Button? = null
     private var dispense: Button? = null
+    private var levelSize : TextView? = null
     private var mTypeWater: String? = null
     private var mQTYWater: String? = null
     private var conf: WifiConfiguration? = null
@@ -58,9 +60,9 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(UserConsumptionViewModel::class.java)
         intializeView()
-       /*
-        viewModel.result.observe(this, Observer {
 
+
+        /*viewModel.result.observe(this, Observer {
             if(it == null){
                 Toast.makeText(this,"User Details Added to Firebase",Toast.LENGTH_LONG).show()
 
@@ -69,14 +71,40 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
             }
 
         })
-        */
-        /*
-        viewModel.fetchUserConsumptionDetails()
-        viewModel.authors.observe(this, Observer {
-            authors.add(it)
+         */
+        viewModel.lastfillTimeStamp()
+        viewModel.timeStampValue.observe(this, Observer {
+            viewModel.fetchUserConsumptionAllDetails(it)
         })
 
-         */
+        viewModel.authors.observe(this, Observer {
+            waterConsumption(it)
+        })
+
+
+    }
+
+   private fun waterConsumption(userData : List<UserConsumptionDetails>) {
+       var sumOfQuantity: Int? = 0
+       if (sumOfQuantity != null) {
+           for (userDataQuantity in userData) {
+               val localValue: Int? = userDataQuantity.WATERQTY?.toInt()
+               sumOfQuantity += localValue!!
+           }
+           val dispenserStatus = quantityRange(UserDetailsConstant.DISPENSER_SIZE!! - sumOfQuantity)
+           levelSize?.text = dispenserStatus
+       }
+   }
+
+    private fun quantityRange(valueSize : Int) : String{
+        when(valueSize){
+            in 15000 .. 20000 -> return "High"
+            in 10000 .. 14999 -> return "Medium"
+            in 5000  .. 9999  -> "Low"
+            else -> return "very Low"
+        }
+        return ""
+
     }
 
     private fun intializeView() {
@@ -102,6 +130,7 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
         button500 = findViewById(R.id.button_500)
         button750 = findViewById(R.id.button_750)
         dispense = findViewById(R.id.button_on)
+        levelSize = findViewById(R.id.levelSize)
         buttonHot?.setOnClickListener(this)
         buttonNormal?.setOnClickListener(this)
         buttonCold?.setOnClickListener(this)
@@ -109,6 +138,7 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
         button500?.setOnClickListener(this)
         button750?.setOnClickListener(this)
         dispense?.setOnClickListener(this)
+        levelSize?.setOnClickListener(this)
     }
 
     private fun resetButtonAction() {
@@ -157,13 +187,14 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
                                     val firstTypeLetterType = mTypeWater!![0]
                                     val strQty = "0" + mQTYWater!!.substring(0, 3)
                                     val user = UserConsumptionDetails()
-                                    val timestamp = Timestamp(System.currentTimeMillis().toLong())
+                                    val timestamp = Timestamp(System.currentTimeMillis())
                                     user.DISPENSERNAME= ssId
                                     user.DISPENSETIME = "014"
-                                    user.TIMESTAMP = timestamp.time
+                                    user.TIMESTAMP = timestamp.time.toString().substring(0,10)
                                     user.WATERQTY = mQTYWater?.substring(0,3)
                                     user.WATERTYPE = mTypeWater?.toLowerCase()
                                     user.USERNAME = "supervisor_2"
+                                    user.PLATFORMTYPE = "AOS"
                                     viewModel.addUserConsumptionDetails(user)
                                     SendCommandToAppliance(firstTypeLetterType, strQty)
                                     clickStopButton = true
