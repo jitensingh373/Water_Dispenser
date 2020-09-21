@@ -11,7 +11,7 @@ class UserConsumptionDetails {
     var USERNAME: String? = null
     var WATERQTY: String? = null
     var WATERTYPE: String? = null
-    var PLATFORMTYPE: String? = null
+    var PLATFORM: String? = null
     constructor() {}
 
 }

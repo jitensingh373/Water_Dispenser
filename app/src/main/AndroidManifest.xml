@@ -47,6 +47,8 @@
         <activity android:name=".activity.MainActivity"/>
         <activity android:name=".activity.ScanQRCode"/>
         <activity android:name=".activity.OpenWifiNetworkAdd"/>
+        <activity android:name=".activity.HomeActivity"/>
+        <activity android:name=".activity.LoginActivity"/>
     </application>
 
 

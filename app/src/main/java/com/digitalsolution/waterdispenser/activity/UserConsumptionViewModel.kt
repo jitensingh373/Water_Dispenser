@@ -6,16 +6,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.digitalsolution.waterdispenser.activity.data.UserConsumptionDetails
+import com.digitalsolution.waterdispenser.data.LoginCredential
 import com.digitalsolution.waterdispenser.data.UserDetailsConstant
 import com.google.firebase.database.*
 import java.sql.Timestamp
 
 class UserConsumptionViewModel : ViewModel() {
     private val dbUserDetails = UserDetailsConstant.FIREBASE_NODE_CHILD?.let { FirebaseDatabase.getInstance().getReference(UserDetailsConstant.FIREBASE_NODE).child(it) }
+
+    private val adminLogin = FirebaseDatabase.getInstance().getReference(UserDetailsConstant.SUPER_DETAILS)
     val timestamp = Timestamp(System.currentTimeMillis())
     private val _authors = MutableLiveData<List<UserConsumptionDetails>>()
     val authors: LiveData<List<UserConsumptionDetails>>
         get() = _authors
+
+    private val _LoginValue = MutableLiveData<List<LoginCredential>>()
+    val loginCredentialFetch: LiveData<List<LoginCredential>>
+        get() = _LoginValue
 
     private val timeStamp = MutableLiveData<String>()
     val timeStampValue: LiveData<String>
@@ -75,6 +82,27 @@ class UserConsumptionViewModel : ViewModel() {
                                 authorList?.let { timeStampLocal = authorList.TIMESTAMP.toString() }
                             }
                             timeStamp.value = (timeStampLocal)
+                        }else {
+                            checkForRemainingValue()
+                        }
+                    }
+                })
+    }
+
+    fun checkForRemainingValue(){
+        dbUserDetails?.orderByChild("WATERTYPE")
+                ?.addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+                    }
+                    override fun onDataChange(p0: DataSnapshot) {
+                        if (p0.exists()) {
+                            val authorSList = mutableListOf<UserConsumptionDetails>()
+                            for (authorSnapshot in p0.children) {
+                                val authorList = authorSnapshot.getValue(UserConsumptionDetails::class.java)
+                                authorList?.ID = authorSnapshot.key
+                                authorList?.let { authorSList.add(it) }
+                            }
+                            _authors.value = authorSList
                         }
                     }
                 })
@@ -95,6 +123,26 @@ class UserConsumptionViewModel : ViewModel() {
                                 authorList?.let { authorSList.add(it) }
                             }
                             _authors.value = authorSList
+                        }
+                    }
+                })
+    }
+
+    fun validateUserAndPassword() {
+        //val connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected")
+        adminLogin?.orderByChild("USERNAME")
+                ?.addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+                    }
+                    override fun onDataChange(p0: DataSnapshot) {
+                        if (p0.exists()) {
+                            val authorSList = mutableListOf<LoginCredential>()
+                            for (authorSnapshot in p0.children) {
+                                val authorList = authorSnapshot.getValue(LoginCredential::class.java)
+                                authorList?.ID = authorSnapshot.key
+                                authorList?.let { authorSList.add(it) }
+                            }
+                            _LoginValue.value = authorSList
                         }
                     }
                 })

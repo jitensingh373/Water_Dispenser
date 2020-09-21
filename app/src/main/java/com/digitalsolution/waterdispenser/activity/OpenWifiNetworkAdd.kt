@@ -56,12 +56,14 @@ class OpenWifiNetworkAdd : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        AlertDialog.Builder(this)
+      /*  AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setMessage("Are you sure you want to close this app?")
                 .setPositiveButton("Yes") { dialog, which -> finish() }
                 .setNegativeButton("No", null)
                 .show()
+
+       */
     }
 
     companion object {

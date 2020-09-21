@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:paddingTop="5dp"
+            android:text="Water Level Very Low !!"
+            android:textColor="@color/pink"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold">
+        </TextView>
+        <TextView
+            android:id="@+id/TextViewDes"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"
+            android:gravity="center"
+            android:text="Water level detected is very low,can't dispense more water.Please notify admin team to refill it..Thank you!!"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold">
+        </TextView>
+
+        <Button
+            android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center"
+            android:layout_margin="0dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/gradient_normal_normal"
+            android:gravity="center"
+            android:text="OK"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+</FrameLayout>

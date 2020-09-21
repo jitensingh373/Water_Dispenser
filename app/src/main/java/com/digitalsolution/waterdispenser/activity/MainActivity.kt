@@ -30,6 +30,7 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 import java.sql.Timestamp
+import kotlin.jvm.Throws
 
 class MainActivity : MyBaseActivity(), View.OnClickListener {
     private var textView: TextView? = null
@@ -59,19 +60,13 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(UserConsumptionViewModel::class.java)
+
+        if (intent.getStringExtra("SSID") != null && intent.getStringExtra("Password") != null) {
+            ssId = intent.getStringExtra("SSID")
+            FIREBASE_NODE_CHILD = ssId ;
+            mPassword = intent.getStringExtra("Password")
+        }
         intializeView()
-
-
-        /*viewModel.result.observe(this, Observer {
-            if(it == null){
-                Toast.makeText(this,"User Details Added to Firebase",Toast.LENGTH_LONG).show()
-
-            }else {
-                Toast.makeText(this,"Error",Toast.LENGTH_LONG).show()
-            }
-
-        })
-         */
         viewModel.lastfillTimeStamp()
         viewModel.timeStampValue.observe(this, Observer {
             viewModel.fetchUserConsumptionAllDetails(it)
@@ -85,16 +80,46 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
     }
 
    private fun waterConsumption(userData : List<UserConsumptionDetails>) {
-       var sumOfQuantity: Int? = 0
-       if (sumOfQuantity != null) {
-           for (userDataQuantity in userData) {
-               val localValue: Int? = userDataQuantity.WATERQTY?.toInt()
-               sumOfQuantity += localValue!!
-           }
-           val dispenserStatus = quantityRange(UserDetailsConstant.DISPENSER_SIZE!! - sumOfQuantity)
+       var sumOfQuantity = 0
+       for (userDataQuantity in userData) {
+           val localValue = userDataQuantity.WATERQTY?.toInt()
+              if(null != localValue && null != sumOfQuantity) {
+                  sumOfQuantity += localValue!!
+              }
+       }
+       var dispenserStatus = quantityRange(UserDetailsConstant.DISPENSER_SIZE - sumOfQuantity)
+       if(dispenserStatus == "very Low"){
+           informAdminForRefil()
            levelSize?.text = dispenserStatus
        }
+       else {
+           levelSize?.text = dispenserStatus
+       }
+
    }
+
+    private fun informAdminForRefil() {
+        if (clickStopFromGif) {
+            val alertDialogBuilderTimer = AlertDialog.Builder(this).setCancelable(false)
+            val inflater = this.layoutInflater
+            val dialogView = inflater.inflate(R.layout.admin_information_layout, null)
+            alertDialogBuilderTimer.setView(dialogView)
+            val btnStop = dialogView.findViewById<Button>(R.id.btn_stop)
+            alertDialog = alertDialogBuilderTimer.create()
+            alertDialog!!.show()
+            btnStop.setOnClickListener {
+                if (alertDialog != null) {
+                    alertDialog!!.dismiss()
+                }
+                val currentapiVersion = Build.VERSION.SDK_INT
+                if (BUILD_VERSION <= currentapiVersion) {
+                    startActivity(Intent(this@MainActivity, OpenWifiNetworkAdd::class.java))
+                } else {
+                    startActivity(Intent(this@MainActivity, ScanQRCode::class.java))
+                }
+            }
+        }
+    }
 
     private fun quantityRange(valueSize : Int) : String{
         when(valueSize){
@@ -103,17 +128,11 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
             in 5000  .. 9999  -> "Low"
             else -> return "very Low"
         }
-        return ""
+        return "very Low"
 
     }
 
     private fun intializeView() {
-        val intent = intent
-        if (intent.getStringExtra("SSID") != null && intent.getStringExtra("Password") != null) {
-            ssId = intent.getStringExtra("SSID")
-            FIREBASE_NODE_CHILD = ssId ;
-            mPassword = intent.getStringExtra("Password")
-        }
         val currentapiVersion = Build.VERSION.SDK_INT
         if (BUILD_VERSION <= currentapiVersion) {
             Toast.makeText(this, "Connected to Whirlpool Dispenser !! ", Toast.LENGTH_SHORT).show()
@@ -146,7 +165,7 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
         mQTYWater = null
         val drawable = resources.getDrawable(R.drawable.gradient_normal_orange)
         dispense!!.background = drawable
-        countValueEnd = countValueEnd + 0
+        countValueEnd += 0
     }
 
     private fun alertDialogFirstPopUp() {
@@ -188,13 +207,13 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
                                     val strQty = "0" + mQTYWater!!.substring(0, 3)
                                     val user = UserConsumptionDetails()
                                     val timestamp = Timestamp(System.currentTimeMillis())
-                                    user.DISPENSERNAME= ssId
+                                    user.DISPENSERNAME = if( ssId != null) ssId else ""
                                     user.DISPENSETIME = "014"
                                     user.TIMESTAMP = timestamp.time.toString().substring(0,10)
                                     user.WATERQTY = mQTYWater?.substring(0,3)
                                     user.WATERTYPE = mTypeWater?.toLowerCase()
                                     user.USERNAME = "supervisor_2"
-                                    user.PLATFORMTYPE = "AOS"
+                                    user.PLATFORM = "AOS"
                                     viewModel.addUserConsumptionDetails(user)
                                     SendCommandToAppliance(firstTypeLetterType, strQty)
                                     clickStopButton = true
@@ -307,7 +326,7 @@ class MainActivity : MyBaseActivity(), View.OnClickListener {
         }).start()
     }
 
-    fun ConnectPhoneWIFIToHotspot(wifiManager: WifiManager?, password: String, selectedWifiNetwork: String?) {
+    private fun ConnectPhoneWIFIToHotspot(wifiManager: WifiManager?, password: String, selectedWifiNetwork: String?) {
         var wifiManager = wifiManager
         if (wifiManager == null) {
             wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
