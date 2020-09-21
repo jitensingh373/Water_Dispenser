@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity(){
         }, 1000)
     }
 
-    fun subscribeToData() {
+    private fun subscribeToData() {
         viewModel?.loginCredentialFetch?.observe(this, Observer {
             loginAllUser.add(it)
         })
